@@ -38,6 +38,13 @@ import (
 	"os/exec"
 )
 
+const usageText = "usage: goupx [args...] path\n"
+
+// usage prints some nice output instead of panic stacktrace when an user calls goupx without arguments
+func usage() {
+	os.Stderr.WriteString(usageText)
+}
+
 // The functions gethdr and writephdr are heavily influenced by code found at
 // http://golang.org/src/pkg/debug/elf/file.go
 
@@ -166,6 +173,11 @@ func main() {
 	run_upx := flag.Bool("u", true, "run upx")
 
 	flag.Parse()
+
+	if flag.NArg() != 1 {
+		usage()
+		return
+	}
 
 	defer func() {
 		if err := recover(); err != nil {
