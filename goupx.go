@@ -43,6 +43,7 @@ const usageText = "usage: goupx [args...] path\n"
 // usage prints some nice output instead of panic stacktrace when an user calls goupx without arguments
 func usage() {
 	os.Stderr.WriteString(usageText)
+	flag.PrintDefaults()
 }
 
 // The functions gethdr and writephdr are heavily influenced by code found at
