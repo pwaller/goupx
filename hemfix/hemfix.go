@@ -1,8 +1,8 @@
-package main
+package hemfix
 
-/* 
+/*
 
-goupx: Fix compiled go binaries so that they can be packed by 
+goupx: Fix compiled go binaries so that they can be packed by
        the universal packer for executables (upx)
 
 Copyright (c) 2012 Peter Waller <peter@pwaller.net>
@@ -16,12 +16,12 @@ Based on hemfix.c Copyright (C) 2012 John Reiser, BitWagon Software LLC
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 3, or (at your option)
   any later version.
- 
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
- 
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software Foundation,
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -31,20 +31,10 @@ import (
 	ELF "debug/elf"
 	"encoding/binary"
 	"errors"
-	"flag"
 	"io"
 	"log"
 	"os"
-	"os/exec"
 )
-
-const usageText = "usage: goupx [args...] path\n"
-
-// usage prints some nice output instead of panic stacktrace when an user calls goupx without arguments
-func usage() {
-	os.Stderr.WriteString(usageText)
-	flag.PrintDefaults()
-}
 
 // The functions gethdr and writephdr are heavily influenced by code found at
 // http://golang.org/src/pkg/debug/elf/file.go
@@ -112,7 +102,7 @@ func writephdr(f *ELF.File, dst int64, sw io.WriteSeeker, p *ELF.Prog) error {
 
 func fixelf(elf *ELF.File, fd io.ReadWriteSeeker) error {
 
-	// Determine where to write header (need 
+	// Determine where to write header (need
 	off, sz, err := gethdr(elf, fd)
 	if err != nil {
 		return err
@@ -145,7 +135,7 @@ func fixelf(elf *ELF.File, fd io.ReadWriteSeeker) error {
 	return nil
 }
 
-func fixfile(filename string) error {
+func FixFile(filename string) error {
 	fd, err := os.OpenFile(filename, os.O_RDWR, 0)
 	if err != nil {
 		return err
@@ -166,53 +156,4 @@ func fixfile(filename string) error {
 		return err
 	}
 	return nil
-}
-
-func main() {
-
-	run_strip := flag.Bool("s", false, "run strip")
-	run_upx := flag.Bool("u", true, "run upx")
-
-	flag.Parse()
-
-	if flag.NArg() != 1 {
-		usage()
-		return
-	}
-
-	defer func() {
-		if err := recover(); err != nil {
-			log.Print("Panicked. Giving up.")
-			panic(err)
-			return
-		}
-	}()
-
-	input_file := flag.Arg(0)
-	err := fixfile(input_file)
-	if err != nil {
-		log.Panicf("Failed to fix '%s': %v", input_file, err)
-	}
-	log.Print("File fixed!")
-
-	if *run_strip {
-		cmd := exec.Command("strip", "-s", input_file)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		err = cmd.Run()
-		if err != nil {
-			log.Panic("strip failed: ", err)
-		}
-	}
-
-	if *run_upx {
-		cmd := exec.Command("upx", input_file)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		err = cmd.Run()
-		if err != nil {
-			log.Panic("upx failed: ", err)
-		}
-	}
-
 }
