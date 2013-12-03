@@ -1,5 +1,5 @@
-goupx - Fix golang executables to work with upx
--------------------------------------------
+goupx - Fix golang ELF executables to work with upx
+---------------------------------------------------
 
 Installation: `go get github.com/pwaller/goupx/`
 
@@ -8,6 +8,8 @@ Installation: `go get github.com/pwaller/goupx/`
 Usage: `goupx [filename]`
 
 Fixes the `PT_LOAD` offset of [filename] and then runs `upx`.
+
+This is only necessary for ELF executable (not Mach-O executables, for example).
 
 Based on [code found on the upx bugtracker](http://sourceforge.net/tracker/?func=detail&atid=102331&aid=3408066&group_id=2331).
 
