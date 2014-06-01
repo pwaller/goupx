@@ -116,6 +116,10 @@ func fixelf(elf *ELF.File, fd io.ReadWriteSeeker) error {
 			continue
 		}
 
+		if p.Off != 0 {
+			continue
+		}
+
 		mask := -p.Align
 		if ^mask&p.Vaddr != 0 && (^mask&(p.Vaddr-p.Off)) == 0 {
 			log.Printf("Hemming PT_LOAD section")
@@ -130,6 +134,7 @@ func fixelf(elf *ELF.File, fd io.ReadWriteSeeker) error {
 
 			dst := off + int64(sz*i)
 			writephdr(elf, dst, fd, p)
+			break
 		}
 	}
 	return nil
