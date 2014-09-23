@@ -116,7 +116,7 @@ func fixelf(elf *ELF.File, fd io.ReadWriteSeeker) error {
 			continue
 		}
 
-		if p.Off != 0 {
+		if p.Off != 0 || p.Flags&ELF.PF_X != ELF.PF_X {
 			continue
 		}
 
