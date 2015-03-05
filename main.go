@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-const usageText = `usage: goupx [args...] files...\n
+const usageText = `usage: goupx [args...] files...
       
     --no-upx: Disables UPX from running.
     --strip-binary: Strips binaries before compressing them.
