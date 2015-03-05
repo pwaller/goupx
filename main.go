@@ -12,7 +12,8 @@ const usageText = `usage: goupx [args...] files...
     --no-upx: Disables UPX from running.
     --strip-binary: Strips binaries before compressing them.
       
-See UPX's documentation (man upx) for information on UPX's flags.`
+See UPX's documentation (man upx) for information on UPX's flags.
+`
 
 var run_strip = false
 var run_upx = true
@@ -26,6 +27,9 @@ func usage() {
 // parseArguments parses arguments from os.Args and separates the goupx flags
 // from the UPX flags, as well as separating the files from the arguments.
 func parseArguments() (args []string, files []string) {
+	if len(os.Args) == 1 {
+		usage()
+	}
 	args = append(args, "/usr/bin/upx")
 	for _, arg := range os.Args[1:] {
 		switch {
@@ -48,11 +52,11 @@ func parseArguments() (args []string, files []string) {
 func compressBinary(input_file string, arguments []string) {
 	if run_upx {
 		cmd := &exec.Cmd{
-			Path:   "/usr/bin/upx",
-			Args:   append(arguments, input_file),
-			Stdout: os.Stdout,
-			Stderr: os.Stderr,
+			Path: "/usr/bin/upx",
+			Args: append(arguments, input_file),
 		}
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
 		if err := cmd.Run(); err != nil {
 			log.Panic("upx failed: ", err)
 		}
