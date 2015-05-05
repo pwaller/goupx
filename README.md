@@ -1,9 +1,9 @@
 goupx - Fix golang ELF executables to work with upx
 ---------------------------------------------------
 
-Installation: `go get github.com/pwaller/goupx/`
+Installation: `go get github.com/pwaller/goupx`
 
-(or if you don't want to do it with root, `GOPATH=${PWD}/env go get github.com/pwaller/goupx/` will install it to `${PWD}/env/bin/goupx`)
+(or if you don't want to do it with root, `GOPATH=${HOME}/.local go get github.com/pwaller/goupx` will install it to `${HOME}/.local/bin/goupx`).
 
 Usage: `goupx [filename]`
 
