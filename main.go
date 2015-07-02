@@ -1,27 +1,38 @@
 package main
 
 import (
-	"github.com/pwaller/goupx/hemfix"
 	"log"
 	"os"
 	"os/exec"
+
+	"github.com/pwaller/goupx/hemfix"
 )
 
 const usageText = `usage: goupx [args...] files...
-      
+
     --no-upx: Disables UPX from running.
     --strip-binary: Strips binaries before compressing them.
-      
+
 See UPX's documentation (man upx) for information on UPX's flags.
 `
 
 var run_strip = false
 var run_upx = true
+var upxPath string
 
 // usage prints some nice output instead of panic stacktrace when an user calls
 // goupx without arguments
 func usage() {
 	os.Stderr.WriteString(usageText)
+}
+
+// findUpxBinary searches for the upx binary in PATH.
+func findUpxBinary() {
+	var err error
+	upxPath, err = exec.LookPath("upx")
+	if err != nil {
+		log.Fatal("Couldn't find upx binary in PATH")
+	}
 }
 
 // parseArguments parses arguments from os.Args and separates the goupx flags
@@ -30,7 +41,7 @@ func parseArguments() (args []string, files []string) {
 	if len(os.Args) == 1 {
 		usage()
 	}
-	args = append(args, "/usr/bin/upx")
+	args = append(args, upxPath)
 	for _, arg := range os.Args[1:] {
 		switch {
 		case arg == "-h" || arg == "--help":
@@ -52,7 +63,7 @@ func parseArguments() (args []string, files []string) {
 func compressBinary(input_file string, arguments []string) {
 	if run_upx {
 		cmd := &exec.Cmd{
-			Path: "/usr/bin/upx",
+			Path: upxPath,
 			Args: append(arguments, input_file),
 		}
 		cmd.Stdout = os.Stdout
@@ -84,6 +95,7 @@ func runHemfix(input_file string) {
 }
 
 func main() {
+	findUpxBinary()
 	arguments, files := parseArguments()
 	for _, file := range files {
 		runHemfix(file)
