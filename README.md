@@ -1,6 +1,13 @@
 goupx - Fix golang ELF executables to work with upx
 ---------------------------------------------------
 
+## Update: 2016/03/10
+
+As far as I (pwaller) know, goupx is no longer necessary since it was fixed in
+go1.6.
+
+## About
+
 Installation: `go get github.com/pwaller/goupx`
 
 (or if you don't want to do it with root, `GOPATH=${HOME}/.local go get github.com/pwaller/goupx` will install it to `${HOME}/.local/bin/goupx`).
