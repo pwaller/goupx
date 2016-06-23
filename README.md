@@ -1,9 +1,9 @@
-goupx - Fix golang ELF executables to work with upx
+goupx - Fix golang Linux ELF executables to work with upx
 ---------------------------------------------------
 
 ## Update: 2016/03/10
 
-As far as I (pwaller) know, goupx is no longer necessary since it was fixed in
+As far as I (pwaller) know, goupx is no longer necessary for Linux binaries since it was fixed in
 go1.6.
 
 ## About
